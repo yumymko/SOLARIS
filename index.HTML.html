@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SOLARIS — Learn. Focus. Shine.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{ --bg1:#FFF8D6; --bg2:#C5E8FF; --accent:#FFD79A; --muted:#6B7280; --navy:#0F172A; --soft-yellow:#FFEBA1; }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto;color:#1F2937;background:linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 100%);min-height:100vh}
+.app{display:flex;gap:20px;max-width:1200px;margin:0 auto;padding:18px}
+.sidebar{width:260px}
+.left-panel{background:#fff;border-radius:14px;padding:18px;height:calc(100vh - 36px);box-shadow:0 12px 40px rgba(15,23,42,0.06);position:sticky;top:12px;overflow:auto}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.logo-badge{width:44px;height:44px;border-radius:999px;background:radial-gradient(circle at 30% 30%, #FFEBA1,#FFD79A);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+.nav-btn{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;color:#374151;font-weight:600;cursor:pointer;border:none;background:transparent;width:100%;text-align:left}
+.nav-btn.active{background:linear-gradient(90deg,#FFD79A,#FFEBA1);box-shadow:0 8px 20px rgba(13,27,61,0.06)}
+.main{flex:1;min-height:80vh}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.top-right{display:flex;align-items:center;gap:10px}
+.stat-pill{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#fff;box-shadow:0 6px 20px rgba(13,27,61,0.04)}
+.card{background:white;border-radius:14px;padding:18px;box-shadow:0 10px 30px rgba(13,27,61,0.05);margin-bottom:12px}
+.welcome-card{display:flex;align-items:center;gap:12px;padding:22px;border-radius:18px;justify-content:center}
+.welcome-avatar{width:120px;height:120px;border-radius:999px;background:radial-gradient(circle at 30% 30%, #FFEBA1,#FFD79A);display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:0 8px 30px rgba(13,27,61,0.05);position:relative;overflow:visible;cursor:pointer}
+.leo-bubble{position:fixed;background:linear-gradient(180deg,#FFF6D9,#FFEBA1);padding:10px 14px;border-radius:12px;box-shadow:0 10px 30px rgba(13,27,61,0.08);display:none;font-weight:700;z-index:40;max-width:320px}
+.leo-bubble.show{display:block;animation:pop 260ms ease}
+@keyframes pop{0%{transform:scale(.92);opacity:0}60%{transform:scale(1.03);opacity:1}100%{transform:scale(1)}}
+.hidden{display:none !important}
+.floating-menu{position:fixed;right:16px;bottom:86px;width:56px;height:56px;border-radius:999px;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(0,0,0,0.12);z-index:60;cursor:pointer}
+.tabbar{position:fixed;left:0;right:0;bottom:0;height:64px;background:linear-gradient(180deg,#ffffffcc,#f8fafc);display:flex;align-items:center;justify-content:space-around;padding:8px 12px;border-top:1px solid #eee;z-index:50}
+.tab-btn{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:#6B7280;cursor:pointer}
+.leo-emoji{position:absolute;right:-6px;top:-10px;font-size:22px;pointer-events:none}
+@media(min-width:980px){.floating-menu{display:none}.tabbar{display:none}.sidebar{display:block}.app{padding:28px}}
+@media(max-width:980px){.sidebar{display:none}.app{padding-bottom:110px}}
+.center{display:flex;align-items:center;justify-content:center}
+.small-muted{color:#6B7280;font-size:13px}
+.btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer}
+.btn-primary{background:linear-gradient(90deg,#FCD34D,#F59E0B);color:#fff;font-weight:700}
+.btn-ghost{background:transparent;border:1px solid #E5E7EB}
+.input{padding:8px;border-radius:8px;border:1px solid #E5E7EB;width:100%}
+.inline {display:inline-block}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.shop-item{background:#fff;padding:12px;border-radius:12px;box-shadow:0 8px 18px rgba(13,27,61,0.04);text-align:center;position:relative}
+
+/* Leo animations */
+.leo-jump { animation: leoJump 1000ms ease-in-out infinite; transform-origin:50% 80%; }
+@keyframes leoJump { 0%{transform:translateY(0)} 25%{transform:translateY(-8px)} 50%{transform:translateY(0)} 75%{transform:translateY(-4px)} 100%{transform:translateY(0)} }
+.leo-bounce-short { animation: leoBounceShort 900ms ease-in-out infinite; }
+@keyframes leoBounceShort { 0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)} }
+.leo-tap { animation: leoTap 300ms ease; }
+@keyframes leoTap { 0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)} }
+
+/* outfit indicator */
+.outfit-dot{position:absolute;left:8px;bottom:6px;background:#fff;border-radius:999px;padding:6px;font-size:12px;box-shadow:0 6px 12px rgba(0,0,0,0.06)}
+
+/* small responsive tweaks */
+@media(max-width:520px){ .welcome-avatar{width:88px;height:88px} .logo-badge{width:40px;height:40px} .sidebar{display:none} .tab-btn div{font-size:10px} }
+</style>
+</head>
+<body>
+<div id="app" class="app" aria-live="polite"></div>
+<div id="leo-bubble" class="leo-bubble" aria-hidden="true"></div>
+<div id="floating-menu" class="floating-menu hidden" title="Menu">🦁</div>
+<div id="tabbar" class="tabbar hidden" aria-hidden="true">
+  <div class="tab-btn" data-page="dashboard">🏠<div style="font-size:11px">Home</div></div>
+  <div class="tab-btn" data-page="pomodoro">⏱<div style="font-size:11px">Focus</div></div>
+  <div class="tab-btn" data-page="flashcards">🧠<div style="font-size:11px">Flash</div></div>
+  <div class="tab-btn" data-page="planner">✅<div style="font-size:11px">Plan</div></div>
+  <div class="tab-btn" data-page="shop">🛍️<div style="font-size:11px">Shop</div></div>
+</div>
+
+<script>
+/* ---------- State & persistence ---------- */
+const KEY = 'solaris_v3_userdata';
+let store = { users:{}, currentUser:null, page:'dashboard' };
+try{ const raw = localStorage.getItem(KEY); if(raw) store = JSON.parse(raw); }catch(e){ console.warn(e) }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){ console.warn('save failed',e); } }
+
+/* ---------- utilities ---------- */
+function esc(s){ return s?String(s).replace(/[&<>"'`]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;'}[c])):''; }
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild; }
+function notify(msg,ms=1800){ const n=document.createElement('div'); n.style.cssText='position:fixed;right:18px;top:18px;padding:10px 14px;background:#111827;color:#fff;border-radius:10px;z-index:9999'; n.textContent=msg; document.body.appendChild(n); setTimeout(()=>n.remove(),ms); }
+function playUISound(type){ try{ const ctx = new (window.AudioContext||window.webkitAudioContext)(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.type='sine'; o.frequency.value = type==='pop'?1200:400; g.gain.setValueAtTime(0.0001,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.06, ctx.currentTime+0.01); g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18); o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.18); }catch(e){} }
+
+/* ---------- Leo SVG + outfit rendering ---------- */
+function baseLeoSVG(){ return `<svg viewBox="0 0 100 100" width="100" height="100"><defs><radialGradient id="mg"><stop offset="0%" stop-color="#FFD79A"/><stop offset="100%" stop-color="#FFEBA1"/></radialGradient></defs><circle cx="50" cy="50" r="45" fill="url(#mg)"/><circle cx="50" cy="50" r="28" fill="#FFF8D6"/><circle cx="42" cy="45" r="4" fill="#333"/><circle cx="58" cy="45" r="4" fill="#333"/><circle cx="43" cy="44" r="1.5" fill="white"/><circle cx="59" cy="44" r="1.5" fill="white"/><circle cx="50" cy="52" r="2" fill="#FFB6C1"/><path d="M 45 56 Q 50 60 55 56" stroke="#333" stroke-width="1.5" fill="none"/></svg>` }
+
+function leoWithOutfitHTML(size=120, outfit=null, pose='wave'){
+  const svg = baseLeoSVG();
+  const badge = outfit ? `<div class="outfit-dot">${outfitEmoji(outfit)}</div>` : '';
+  return `<div style="width:${size}px;height:${size}px;position:relative">${svg}${badge}</div>`;
+}
+
+function outfitEmoji(key){
+  return ({glasses:'👓',cap:'🎓',scarf:'🧣',hoodie:'🦁',astro:'🚀',sung:'😎'})[key]||'';
+}
+
+/* ---------- render ---------- */
+function render(){
+  save();
+  const app = document.getElementById('app'); app.innerHTML='';
+  const side = el(`<aside class="sidebar"><div class="left-panel">
+    <div class="logo"><div class="logo-badge" id="logo-leo">${baseLogoHTML()}</div><div><div style="font-weight:800;color:#D97706;font-size:18px">SOLARIS</div><div style="font-size:13px;color:#6B7280" id="user-welcome">${store.currentUser?('Welcome '+esc(store.currentUser.username)):'Selamat datang'}</div></div></div>
+    <nav role="navigation" aria-label="sidebar">
+      <button class="nav-btn ${store.page==='dashboard'?'active':''}" data-page="dashboard">🦁 Dashboard</button>
+      <button class="nav-btn ${store.page==='pomodoro'?'active':''}" data-page="pomodoro">⏰ Pomodoro</button>
+      <button class="nav-btn ${store.page==='flashcards'?'active':''}" data-page="flashcards">🧠 Flashcards</button>
+      <button class="nav-btn ${store.page==='planner'?'active':''}" data-page="planner">📝 Planner</button>
+      <button class="nav-btn ${store.page==='statistics'?'active':''}" data-page="statistics">📊 Statistik</button>
+      <button class="nav-btn ${store.page==='journal'?'active':''}" data-page="journal">📔 Jurnal</button>
+      <button class="nav-btn ${store.page==='mood'?'active':''}" data-page="mood">😊 Mood</button>
+      <button class="nav-btn ${store.page==='achievements'?'active':''}" data-page="achievements">🏆 Pencapaian</button>
+      <button class="nav-btn ${store.page==='shop'?'active':''}" data-page="shop">🛍️ Toko Leo</button>
+      <button class="nav-btn ${store.page==='about'?'active':''}" data-page="about">ℹ️ Tentang</button>
+    </nav></div></aside>`);
+  app.appendChild(side);
+
+  const main = document.createElement('main'); main.className='main';
+  const top = el(`<div class="topbar"><div></div><div class="top-right">
+    <div class="stat-pill">☀<div style="margin-left:8px;font-weight:700" id="tp-sun">${store.currentUser?store.currentUser.sunPoints:0}</div></div>
+    <div class="stat-pill">🔥<div style="margin-left:8px;font-weight:700" id="tp-streak">${store.currentUser?store.currentUser.streak:0}</div></div>
+    <div style="width:46px;height:46px;border-radius:999px;background:radial-gradient(circle at 30% 30%, #FFEBA1,#FFD79A);display:flex;align-items:center;justify-content:center" id="leo-top">${baseLogoHTML()}</div>
+    <div><button id="auth-btn" class="btn btn-ghost">${store.currentUser?'Keluar':'Login'}</button></div>
+  </div></div>`);
+  main.appendChild(top);
+
+  const content = document.createElement('div'); content.style.marginTop='12px'; content.innerHTML = pageHTML(store.page);
+  main.appendChild(content);
+  app.appendChild(main);
+
+  // attach nav handlers
+  document.querySelectorAll('.nav-btn').forEach(b=> b.onclick = ()=>{ const p=b.getAttribute('data-page'); store.page=p; render(); leoReact(p); });
+  document.getElementById('auth-btn').onclick = ()=>{ if(store.currentUser){ store.currentUser=null; notify('Keluar'); render(); } else authPrompt(); };
+
+  // mobile controls visibility
+  const fm = document.getElementById('floating-menu'), tb = document.getElementById('tabbar');
+  if(window.innerWidth < 980){ fm.classList.remove('hidden'); tb.classList.remove('hidden'); } else { fm.classList.add('hidden'); tb.classList.add('hidden'); closeMobileSidebar(); }
+
+  attachEvents();
+  renderStatistics();
+}
+
+/* ---------- logo with Leo instead of sun ---------- */
+function baseLogoHTML(){ return `<div style="width:34px;height:34px">${baseLeoSVG_small()}</div>`; }
+function baseLeoSVG_small(){ return `<svg viewBox="0 0 100 100" width="34" height="34"><defs><radialGradient id="mg"><stop offset="0%" stop-color="#FFD79A"/><stop offset="100%" stop-color="#FFEBA1"/></radialGradient></defs><circle cx="50" cy="50" r="45" fill="url(#mg)"/><circle cx="50" cy="50" r="28" fill="#FFF8D6"/><circle cx="42" cy="45" r="3" fill="#333"/><circle cx="58" cy="45" r="3" fill="#333"/><path d="M45 56 Q50 60 55 56" stroke="#333" stroke-width="1.2" fill="none"/></svg>`; }
+
+/* ---------- Pages ---------- */
+function pageHTML(page){
+  if(page==='dashboard') return dashboardHTML();
+  if(page==='pomodoro') return pomodoroHTML();
+  if(page==='flashcards') return flashcardsHTML();
+  if(page==='planner') return plannerHTML();
+  if(page==='statistics') return statisticsHTML();
+  if(page==='shop') return shopHTML();
+  if(page==='journal') return journalHTML();
+  if(page==='mood') return moodHTML();
+  if(page==='achievements') return achievementsHTML();
+  return aboutHTML();
+}
+
+function dashboardHTML(){
+  const u = store.currentUser;
+  const outfit = u && u.unlockedOutfits && u.unlockedOutfits[ u.unlockedOutfits.length -1 ];
+  const avatar = leoWithOutfitHTML(120, outfit);
+  return `<div>
+    <div class="card welcome-card">
+      <div class="welcome-avatar leo-jump" id="leo-avatar" title="Klik untuk interaksi">${avatar}</div>
+      <div style="flex:1;text-align:center">
+        <div style="font-size:20px;font-weight:800;color:#D97706" id="hello-line">${u?('Hello '+esc(u.username)):'Hello, Student'}</div>
+        <div style="margin-top:6px;font-style:italic;color:#6B7280" id="dash-quote">"Keep shining!"</div>
+      </div>
+    </div>
+    <div class="card" style="display:flex;gap:12px;justify-content:space-between">
+      <div style="flex:1;text-align:center"><div style="font-weight:800;color:#D97706">☀</div><div class="small-muted">Points</div><div style="font-weight:800;font-size:20px" id="points-main">${u?u.sunPoints:0}</div></div>
+      <div style="flex:1;text-align:center"><div style="font-weight:800;color:#34D399">🔥</div><div class="small-muted">Streak</div><div style="font-weight:800;font-size:20px" id="streak-main">${u?u.streak:0}</div></div>
+      <div style="flex:1;text-align:center"><div style="font-weight:800;color:#60A5FA">⏱</div><div class="small-muted">Minutes</div><div style="font-weight:800;font-size:20px" id="minutes-main">${u?u.totalStudyMinutes:0}</div></div>
+      <div style="flex:1;text-align:center"><div style="font-weight:800;color:#F472B6">✅</div><div class="small-muted">Tasks</div><div style="font-weight:800;font-size:20px" id="tasks-main">${u?u.completedTasks:0}</div></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Quick Actions</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" id="quick-pomo">Mulai Pomodoro 25m</button>
+        <button class="btn btn-ghost" id="quick-flash">Tambah Flashcard</button>
+        <button class="btn btn-ghost" id="quick-task">Tambah Task</button>
+        <button class="btn btn-ghost" id="quick-shop">Buka Toko</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Challenges</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <div style="flex:1;min-width:180px" class="card"><strong>Daily Login</strong><p class="small-muted">Masuk berkala untuk dapat Sun Points</p><div style="margin-top:8px"><button id="claim-login" class="btn btn-primary">Claim</button></div></div>
+        <div style="flex:1;min-width:180px" class="card"><strong>10 Pomodoro</strong><p class="small-muted">Selesaikan 10 sesi untuk hadiah</p><div style="margin-top:8px"><button id="challenge-pomo" class="btn btn-primary">Mulai</button></div></div>
+        <div style="flex:1;min-width:180px" class="card"><strong>Study Streak 7</strong><p class="small-muted">Pertahankan streak 7 hari</p><div style="margin-top:8px"><button id="challenge-streak" class="btn btn-primary">Ikut</button></div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function pomodoroHTML(){ return `<div class="card">
+  <h3 style="margin-top:0">Pomodoro</h3>
+  <div style="display:flex;gap:12px;align-items:center">
+    <div id="pomo-clock" style="width:180px;height:180px;border-radius:999px;background:linear-gradient(180deg,#EFF6FF,#DBEAFE);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800">25:00</div>
+    <div style="flex:1">
+      <div style="display:flex;gap:8px">
+        <button id="pomo-start" class="btn btn-primary">Mulai</button>
+        <button id="pomo-pause" class="btn btn-ghost">Pause</button>
+        <button id="pomo-reset" class="btn btn-ghost">Reset</button>
+      </div>
+      <div style="margin-top:10px"><label class="small-muted">Focus (menit)</label><input id="pomo-min" type="number" min="5" value="25" class="input" style="width:90px;margin-left:8px"></div>
+    </div>
+  </div>
+</div>`; }
+
+function flashcardsHTML(){
+  const list = (store.currentUser && store.currentUser.flashcards) ? store.currentUser.flashcards : [];
+  const items = list.length ? list.map(c=>`<div style="padding:10px;border-radius:10px;background:#F9FAFB;margin-bottom:8px"><strong>${esc(c.front)}</strong><div style="font-size:13px;color:#6B7280">${esc(c.tag||'')}</div></div>`).join('') : '<div style="color:#6B7280">Belum ada flashcards.</div>';
+  return `<div class="card">
+    <h3 style="margin-top:0">Flashcards</h3>
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:12px">
+      <div>
+        <input id="fc-front" class="input" placeholder="Front (pertanyaan)"><input id="fc-back" class="input" placeholder="Back (jawaban)" style="margin-top:8px"><input id="fc-tag" class="input" placeholder="Tag" style="margin-top:8px">
+        <div style="display:flex;gap:8px;margin-top:8px"><button id="fc-add" class="btn btn-primary">Tambah</button><button id="fc-study" class="btn btn-ghost">Mulai Belajar</button></div>
+      </div>
+      <div>
+        <h4 style="margin:6px 0">Flashcards Saya (<span id="flash-count">${list.length}</span>)</h4>
+        <div id="fc-list" style="max-height:320px;overflow:auto">${items}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function plannerHTML(){
+  const tasks = (store.currentUser && store.currentUser.tasks) ? store.currentUser.tasks : [];
+  const items = tasks.length ? tasks.map(t=>`<div style="padding:10px;border-radius:10px;background:#F9FAFB;margin-bottom:8px"><input type="checkbox" data-id="${t.id}" class="task-cb" ${t.completed?'checked':''}> <strong>${esc(t.title)}</strong><div style="font-size:12px;color:#6B7280">📅 ${esc(t.date)}</div></div>`).join('') : '<div style="color:#6B7280">Belum ada tugas.</div>';
+  return `<div class="card">
+    <h3 style="margin-top:0">Planner</h3>
+    <div style="display:flex;gap:12px;flex-direction:column">
+      <div style="display:flex;gap:8px"><input id="task-title" class="input" placeholder="Judul tugas"><input id="task-date" type="date" class="input" style="width:200px"><button id="task-add" class="btn btn-primary">Tambah</button></div>
+      <div id="task-list" style="margin-top:12px">${items}</div>
+    </div>
+  </div>`;
+}
+
+function statisticsHTML(){ return `<div class="card"><h3 style="margin-top:0">Statistik</h3>
+  <div style="display:flex;gap:12px;flex-direction:column">
+    <canvas id="stat-min" width="600" height="160" style="max-width:100%"></canvas>
+    <div style="display:flex;gap:12px">
+      <canvas id="stat-small" width="300" height="120"></canvas>
+      <div style="width:260px" class="card"><div style="font-weight:700">Ringkasan</div><div id="stat-insight" style="margin-top:8px;color:#6B7280">Belum ada data.</div></div>
+    </div>
+  </div>
+</div>`; }
+
+function shopHTML(){
+  const owned = store.currentUser && store.currentUser.unlockedOutfits ? store.currentUser.unlockedOutfits : [];
+  const ownedList = owned.length ? owned.map(k=>`<div style="padding:6px;border-radius:8px;background:#DBEAFE;margin:6px;display:inline-block">${outfitEmoji(k)}</div>`).join('') : '<div class="small-muted">Belum ada outfit</div>';
+  return `<div class="card">
+    <h3 style="margin-top:0">Toko Leo</h3>
+    <div style="margin-bottom:8px" class="small-muted">Beli outfit untuk Leo menggunakan Sun Points. Login diperlukan untuk membeli.</div>
+    <div class="shop-grid">
+      <div class="shop-item"><div style="font-size:28px">👓</div><div style="font-weight:700">Kacamata</div><div>☀ 50</div><button class="buy-btn btn btn-primary" data-key="glasses">Beli</button></div>
+      <div class="shop-item"><div style="font-size:28px">🎓</div><div style="font-weight:700">Topi Wisuda</div><div>☀ 100</div><button class="buy-btn btn btn-primary" data-key="cap">Beli</button></div>
+      <div class="shop-item"><div style="font-size:28px">🧣</div><div style="font-weight:700">Syal</div><div>☀ 60</div><button class="buy-btn btn btn-primary" data-key="scarf">Beli</button></div>
+      <div class="shop-item"><div style="font-size:28px">🦁</div><div style="font-weight:700">Hoodie</div><div>☀ 120</div><button class="buy-btn btn btn-primary" data-key="hoodie">Beli</button></div>
+      <div class="shop-item"><div style="font-size:28px">🚀</div><div style="font-weight:700">Helmet</div><div>☀ 180</div><button class="buy-btn btn btn-primary" data-key="astro">Beli</button></div>
+      <div class="shop-item"><div style="font-size:28px">😎</div><div style="font-weight:700">Sunglasses</div><div>☀ 80</div><button class="buy-btn btn btn-primary" data-key="sung">Beli</button></div>
+    </div>
+    <div style="margin-top:12px"><h4 style="margin:6px 0">Preview & Koleksi</h4><div id="leo-preview" style="width:140px;height:140px;position:relative">${leoWithOutfitHTML(120, owned[owned.length-1] || null)}</div><div style="margin-top:8px">${ownedList}</div></div>
+  </div>`;
+}
+
+function journalHTML(){
+  const j = (store.currentUser && store.currentUser.journals) ? store.currentUser.journals : [];
+  const items = j.slice().reverse().map(e=>`<div style="padding:8px;border-radius:8px;background:#F9FAFB;margin-bottom:6px"><strong>${esc(e.title)}</strong><div style="font-size:12px;color:#6B7280">${esc(e.created)}</div><div style="margin-top:6px">${esc(e.body)}</div></div>`).join('') || '<div style="color:#6B7280">Belum ada catatan.</div>';
+  return `<div class="card"><h3 style="margin-top:0">Jurnal</h3>
+    <div style="display:flex;gap:8px;flex-direction:column">
+      <input id="jr-title" class="input" placeholder="Judul">
+      <textarea id="jr-body" class="input" style="min-height:120px"></textarea>
+      <div><button id="jr-save" class="btn btn-primary">Simpan</button></div>
+    </div>
+    <div style="margin-top:12px">${items}</div>
+  </div>`;
+}
+
+function moodHTML(){
+  const moods = (store.currentUser && store.currentUser.moods) ? store.currentUser.moods : [];
+  const list = moods.length ? moods.slice().reverse().map(m=>`<div style="padding:8px;border-radius:8px;background:#F9FAFB;margin-bottom:6px">${m.date} — ${esc(m.mood)}</div>`).join('') : '<div style="color:#6B7280">Belum ada mood tercatat.</div>';
+  return `<div class="card"><h3 style="margin-top:0">Mood Tracker</h3>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <button class="mood-btn btn btn-ghost" data-mood="😢">😢</button>
+      <button class="mood-btn btn btn-ghost" data-mood="😞">😞</button>
+      <button class="mood-btn btn btn-ghost" data-mood="😐">😐</button>
+      <button class="mood-btn btn btn-ghost" data-mood="🙂">🙂</button>
+      <button class="mood-btn btn btn-ghost" data-mood="😁">😁</button>
+      <button id="mood-save" class="btn btn-primary">Simpan</button>
+    </div>
+    <div id="mood-list">${list}</div></div>`;
+}
+
+function achievementsHTML(){
+  const a = (store.currentUser && store.currentUser.achievements) ? store.currentUser.achievements : [];
+  const items = a.length ? a.map(x=>`<div style="padding:8px;border-radius:8px;background:#F9FAFB;margin-bottom:6px"><strong>${esc(x.title)}</strong><div style="font-size:12px;color:#6B7280">${esc(x.created)}</div></div>`).join('') : '<div style="color:#6B7280">Belum ada pencapaian.</div>';
+  return `<div class="card"><h3 style="margin-top:0">Pencapaian</h3>
+    <div><label class="small-muted">Unggah bukti (gambar)</label><input id="ach-file" type="file" style="display:block;margin-top:6px"><input id="ach-title" class="input" placeholder="Judul" style="margin-top:6px"><div style="margin-top:6px"><button id="ach-upload" class="btn btn-primary">Unggah</button></div></div>
+    <div style="margin-top:12px">${items}</div>
+  </div>`;
+}
+
+function aboutHTML(){ return `<div class="card"><h3 style="margin-top:0">Tentang</h3><p class="small-muted">SOLARIS — Learn. Focus. Shine. Leo adalah teman belajar yang membantu kamu fokus, mencatat progres, dan memberi penghargaan atas usaha.</p></div>`; }
+
+/* ---------- Event handling ---------- */
+function attachEvents(){
+  // Quick buttons
+  const qp = document.getElementById('quick-pomo'); if(qp) qp.onclick = ()=>{ requireLogin('pomodoro'); };
+  const qf = document.getElementById('quick-flash'); if(qf) qf.onclick = ()=>{ requireLogin('flashcards'); };
+  const qt = document.getElementById('quick-task'); if(qt) qt.onclick = ()=>{ requireLogin('planner'); };
+
+  // Auth
+  const authBtn = document.getElementById('auth-btn'); if(authBtn) authBtn.onclick = ()=>{ if(store.currentUser){ store.currentUser=null; notify('Keluar'); render(); } else authPrompt(); };
+
+  // Dashboard interactions
+  const leoAvatar = document.getElementById('leo-avatar'); if(leoAvatar){
+    leoAvatar.onclick = ()=>{ // tap interaction (C)
+      leoTap(); playUISound('pop');
+      if(!store.currentUser){ showBubble('Halo! Login dulu untuk kustomisasi saya.'); return; }
+      // small reward on tap
+      store.currentUser.sunPoints = (store.currentUser.sunPoints||0) + 1;
+      notify('+1 Sun Point'); save(); render();
+    };
+    // long press -> sleep
+    let pressTimer;
+    leoAvatar.onpointerdown = ()=>{ pressTimer = setTimeout(()=>{ leoSleep(); if(store.currentUser){ store.currentUser.sunPoints = (store.currentUser.sunPoints||0)+2; notify('+2 Sun Points for patience'); save(); render(); } }, 900); }
+    leoAvatar.onpointerup = ()=>{ clearTimeout(pressTimer); }
+  }
+
+  // Pomodoro controls
+  const ps = document.getElementById('pomo-start'); if(ps) ps.onclick = ()=>{ if(!store.currentUser){ alertLoginRequired(); return; } const mins = Number(document.getElementById('pomo-min').value||25); store.currentUser.totalStudyMinutes=(store.currentUser.totalStudyMinutes||0)+mins; store.currentUser.sunPoints=(store.currentUser.sunPoints||0)+mins; store.currentUser.pomodoros=(store.currentUser.pomodoros||0)+1; save(); notify('Pomodoro tercatat — +'+mins+' Sun Points'); playUISound('pop'); render(); };
+  const pp = document.getElementById('pomo-pause'); if(pp) pp.onclick = ()=>{ notify('Paused'); };
+  const pr = document.getElementById('pomo-reset'); if(pr) pr.onclick = ()=>{ document.getElementById('pomo-clock').textContent='25:00'; notify('Reset'); };
+
+  // Flashcards
+  const fcadd = document.getElementById('fc-add'); if(fcadd) fcadd.onclick = ()=>{ if(!store.currentUser){ alertLoginRequired(); return; } const f=(document.getElementById('fc-front')||{}).value||''; const b=(document.getElementById('fc-back')||{}).value||''; const t=(document.getElementById('fc-tag')||{}).value||'General'; if(!f||!b){ alert('Pertanyaan & jawaban diperlukan'); return; } store.currentUser.flashcards=store.currentUser.flashcards||[]; store.currentUser.flashcards.push({id:Date.now(),front:f,back:b,tag:t}); save(); notify('Flashcard tersimpan'); render(); };
+  const fcstudy = document.getElementById('fc-study'); if(fcstudy) fcstudy.onclick = ()=>{ if(!store.currentUser){ alertLoginRequired(); return; } if(!(store.currentUser.flashcards||[]).length){ alert('Belum ada flashcards'); return; } startFlashStudy(); };
+
+  // Planner
+  const taskAdd = document.getElementById('task-add'); if(taskAdd) taskAdd.onclick = ()=>{ if(!store.currentUser){ alertLoginRequired(); return; } const title=(document.getElementById('task-title')||{}).value||''; const date=(document.getElementById('task-date')||{}).value||''; if(!title||!date){ alert('Judul & tanggal diperlukan'); return; } store.currentUser.tasks=store.currentUser.tasks||[]; store.currentUser.tasks.push({id:Date.now(),title,date,completed:false}); save(); notify('Tugas ditambahkan'); render(); };
+  document.querySelectorAll('.task-cb').forEach(cb=> cb.onchange = function(){ if(!store.currentUser){ alertLoginRequired(); render(); return; } const id=Number(this.getAttribute('data-id')); store.currentUser.tasks = store.currentUser.tasks.map(t=>{ if(t.id===id){ t.completed=this.checked; if(this.checked){ store.currentUser.completedTasks=(store.currentUser.completedTasks||0)+1; store.currentUser.sunPoints=(store.currentUser.sunPoints||0)+10; playUISound('pop'); } } return t }); save(); render(); });
+
+  // Shop buy
+  document.querySelectorAll('.buy-btn').forEach(b=> b.onclick = function(){ if(!store.currentUser){ alertLoginRequired(); return; } const key=this.getAttribute('data-key'); const prices={glasses:50,cap:100,scarf:60,hoodie:120,astro:180,sung:80}; const price=prices[key]||50; if((store.currentUser.sunPoints||0) < price){ alert('Sun Points tidak cukup'); return; } store.currentUser.sunPoints -= price; store.currentUser.unlockedOutfits = store.currentUser.unlockedOutfits||[]; if(!store.currentUser.unlockedOutfits.includes(key)) store.currentUser.unlockedOutfits.push(key); // immediately apply outfit as last bought
+    save(); // animation preview
+    const preview = document.getElementById('leo-preview'); if(preview){ const ov=document.createElement('div'); ov.style.position='absolute'; ov.style.top='6px'; ov.style.left='50%'; ov.style.transform='translateX(-50%)'; ov.style.fontSize='28px'; ov.textContent = outfitEmoji(key); preview.appendChild(ov); ov.animate([{transform:'translate(-50%,0) scale(.6)',opacity:0},{transform:'translate(-50%,-12px) scale(1.06)',opacity:1},{transform:'translate(-50%,-80px) scale(.4)',opacity:0}],{duration:900}); setTimeout(()=>ov.remove(),920); }
+    confetti(); playUISound('pop'); notify('Berhasil membeli '+key); render(); });
+
+  // Journal save
+  const jrs = document.getElementById('jr-save'); if(jrs) jrs.onclick = ()=>{ if(!store.currentUser){ alertLoginRequired(); return; } const title=(document.getElementById('jr-title')||{}).value||''; const body=(document.getElementById('jr-body')||{}).value||''; if(!title||!body){ alert('Judul & isi diperlukan'); return; } store.currentUser.journals = store.currentUser.journals||[]; store.currentUser.journals.push({id:Date.now(),title,body,created:(new Date()).toLocaleString()}); save(); notify('Jurnal tersimpan'); render(); };
+
+  // Mood
+  document.querySelectorAll('.mood-btn').forEach(b=> b.onclick = ()=>{ document.querySelectorAll('.mood-btn').forEach(x=> x.classList.remove('ring')); b.classList.add('ring'); });
+  const moodSave = document.getElementById('mood-save'); if(moodSave) moodSave.onclick = ()=>{ if(!store.currentUser){ alertLoginRequired(); return; } const sel = document.querySelector('.mood-btn.ring'); if(!sel){ alert('Pilih mood'); return; } store.currentUser.moods = store.currentUser.moods||[]; store.currentUser.moods.push({id:Date.now(),mood:sel.getAttribute('data-mood'),date:(new Date()).toLocaleString()}); save(); notify('Mood tersimpan'); render(); };
+
+  // achievements upload
+  const achUp = document.getElementById('ach-upload'); if(achUp) achUp.onclick = ()=>{ if(!store.currentUser){ alertLoginRequired(); return; } const title=(document.getElementById('ach-title')||{}).value||''; if(!title){ alert('Judul diperlukan'); return; } store.currentUser.achievements = store.currentUser.achievements||[]; store.currentUser.achievements.push({title,created:(new Date()).toLocaleString()}); save(); notify('Pencapaian diunggah'); playUISound('pop'); render(); };
+
+  // floating menu open
+  const fm = document.getElementById('floating-menu'); if(fm) fm.onclick = ()=>{ openMobileSidebar(); playUISound('pop'); };
+
+  // tabbar
+  document.querySelectorAll('.tab-btn').forEach(b=> b.onclick = ()=>{ store.page = b.getAttribute('data-page'); render(); leoReact(store.page); });
+
+  // dashboard challenge buttons
+  const claimLogin = document.getElementById('claim-login'); if(claimLogin) claimLogin.onclick = ()=>{ if(!store.currentUser){ alertLoginRequired(); return; } // daily login simple check
+    store.currentUser.lastLogin = store.currentUser.lastLogin || ''; const today = new Date().toDateString(); if(store.currentUser.lastLogin === today){ notify('Sudah klaim hari ini'); return; } store.currentUser.lastLogin = today; store.currentUser.sunPoints = (store.currentUser.sunPoints||0)+10; store.currentUser.streak=(store.currentUser.streak||0)+1; save(); notify('+10 Sun Points (daily login)'); render(); };
+  const challengePomo = document.getElementById('challenge-pomo'); if(challengePomo) challengePomo.onclick = ()=>{ requireLogin('pomodoro'); };
+  const challengeStreak = document.getElementById('challenge-streak'); if(challengeStreak) challengeStreak.onclick = ()=>{ alert('Ayo pertahankan streak 7 hari!'); };
+
+  // achievements upload handled above
+
+  // small helpers for confetti, sounds inside functions defined later
+}
+
+/* ---------- require-login helpers ---------- */
+function alertLoginRequired(){ alert('Fitur ini memerlukan login. Klik Login di kanan atas.'); }
+function requireLogin(page){ if(!store.currentUser){ alertLoginRequired(); return; } store.page=page; render(); }
+
+/* ---------- mobile sidebar ---------- */
+function openMobileSidebar(){
+  if(document.getElementById('mobile-side')) return;
+  const overlay = document.createElement('div'); overlay.id='mobile-side'; overlay.style.position='fixed'; overlay.style.left='0'; overlay.style.top='0'; overlay.style.bottom='0'; overlay.style.width='100%'; overlay.style.zIndex='80';
+  overlay.innerHTML = `<div style="position:absolute;left:0;top:0;bottom:0;width:84%;max-width:320px;background:#fff;padding:16px;box-shadow:8px 0 30px rgba(0,0,0,0.12);overflow:auto">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="logo-badge">🦁</div><div><div style="font-weight:800;color:#D97706">SOLARIS</div><div style="font-size:12px;color:#6B7280">${store.currentUser?('Welcome '+esc(store.currentUser.username)):''}</div></div></div>
+    <nav class="flex flex-col gap-2">
+      <button class="nav-mobile" data-page="dashboard">🏠 Dashboard</button>
+      <button class="nav-mobile" data-page="pomodoro">⏰ Pomodoro</button>
+      <button class="nav-mobile" data-page="flashcards">🧠 Flashcards</button>
+      <button class="nav-mobile" data-page="planner">📝 Planner</button>
+      <button class="nav-mobile" data-page="statistics">📊 Statistik</button>
+      <button class="nav-mobile" data-page="shop">🦁 Toko Leo</button>
+      <button class="nav-mobile" data-page="about">ℹ️ Tentang</button>
+    </nav>
+  </div><div style="position:absolute;right:0;top:0;bottom:0;left:84%;background:rgba(0,0,0,0.2)"></div>`;
+  document.body.appendChild(overlay); document.querySelectorAll('.nav-mobile').forEach(b=> b.onclick = ()=>{ store.page = b.getAttribute('data-page'); render(); leoReact(store.page); closeMobileSidebar(); });
+}
+function closeMobileSidebar(){ const el=document.getElementById('mobile-side'); if(el) el.remove(); }
+
+/* ---------- leo interactions (complex C) ---------- */
+function leoTap(){
+  const avatar = document.getElementById('leo-avatar');
+  if(!avatar) return;
+  avatar.classList.remove('leo-jump');
+  avatar.classList.add('leo-tap');
+  setTimeout(()=>{ avatar.classList.remove('leo-tap'); avatar.classList.add('leo-jump'); },350);
+  showBubble('Yay! Kamu klik Leo 😊');
+}
+
+function leoSleep(){
+  const avatar = document.getElementById('leo-avatar');
+  if(!avatar) return;
+  avatar.classList.remove('leo-jump');
+  avatar.style.opacity = '0.6';
+  showBubble('Zzz... (Leo is sleeping)');
+  setTimeout(()=>{ avatar.style.opacity='1'; avatar.classList.add('leo-jump'); showBubble('Bangun!'); },1600);
+}
+
+/* ---------- bubble ---------- */
+function showBubble(msg){
+  const b = document.getElementById('leo-bubble'); b.textContent = msg;
+  const avatar = document.querySelector('.welcome-avatar');
+  if(avatar){ const r=avatar.getBoundingClientRect(); b.style.left = (r.right + 8) + 'px'; b.style.top = (r.top + window.scrollY) + 'px'; } else { b.style.right='20px'; b.style.top='80px'; }
+  b.classList.add('show'); playUISound('pop'); setTimeout(()=>b.classList.remove('show'),2400);
+}
+
+/* ---------- flash study modal ---------- */
+function startFlashStudy(){
+  if(!store.currentUser) return;
+  const cards = store.currentUser.flashcards || [];
+  let idx=0; let flipped=false;
+  const modal = document.createElement('div'); modal.style.position='fixed'; modal.style.left='0'; modal.style.top='0'; modal.style.right='0'; modal.style.bottom='0'; modal.style.background='rgba(0,0,0,0.4)'; modal.style.display='flex'; modal.style.alignItems='center'; modal.style.justifyContent='center'; modal.style.zIndex=9999;
+  const box = document.createElement('div'); box.style.width='90%'; box.style.maxWidth='560px'; box.style.background='#fff'; box.style.padding='20px'; box.style.borderRadius='12px'; box.style.textAlign='center';
+  const cardEl = document.createElement('div'); cardEl.style.padding='36px'; cardEl.style.borderRadius='12px'; cardEl.style.background='#FFF8D6'; cardEl.style.marginBottom='12px'; cardEl.style.fontSize='20px'; cardEl.style.minHeight='120px';
+  cardEl.textContent = cards[idx].front;
+  const btnFlip = document.createElement('button'); btnFlip.className='btn btn-ghost'; btnFlip.textContent='Flip'; btnFlip.onclick = ()=>{ flipped = !flipped; cardEl.textContent = flipped?cards[idx].back:cards[idx].front; };
+  const btnNext = document.createElement('button'); btnNext.className='btn btn-primary'; btnNext.style.marginLeft='8px'; btnNext.textContent='Next'; btnNext.onclick = ()=>{ idx++; flipped=false; if(idx>=cards.length){ document.body.removeChild(modal); notify('Selesai belajar! +10 Sun Points'); store.currentUser.flashcardsStudied=(store.currentUser.flashcardsStudied||0)+cards.length; store.currentUser.sunPoints=(store.currentUser.sunPoints||0)+10; save(); render(); return; } cardEl.textContent = cards[idx].front; };
+  box.appendChild(cardEl); box.appendChild(btnFlip); box.appendChild(btnNext); modal.appendChild(box); document.body.appendChild(modal);
+}
+
+/* ---------- statistics drawing ---------- */
+function renderStatistics(){
+  const canvas = document.getElementById('stat-min'); if(!canvas) return;
+  const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height);
+  const data = (store.currentUser && store.currentUser.statsMinutes) ? store.currentUser.statsMinutes : [20,30,15,40,10,50,25];
+  const w=canvas.width, h=canvas.height, pad=30; const max=Math.max(...data,50);
+  data.forEach((v,i)=>{ const bw=(w-pad*2)/data.length*0.7; const x=pad + i*((w-pad*2)/data.length) + ((w-pad*2)/data.length-bw)/2; const bh=(v/max)*(h-60); ctx.fillStyle='rgba(255,215,122,0.95)'; roundRect(ctx,x,h-30-bh,bw,bh,6,true,false); ctx.fillStyle='#6B7280'; ctx.font='12px Inter'; ctx.fillText(['Sen','Sel','Rab','Kam','Jum','Sab','Min'][i]||i,x,h-8); });
+  const insight = document.getElementById('stat-insight'); if(insight){ const avg=Math.round(data.reduce((a,b)=>a+b,0)/data.length); insight.textContent = `Rata-rata fokus per hari: ${avg} menit`; }
+}
+function roundRect(ctx,x,y,w,h,r,fill,stroke){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); if(fill) ctx.fill(); if(stroke) ctx.stroke(); }
+
+/* ---------- small extras ---------- */
+function confetti(){ for(let i=0;i<12;i++){ const c=document.createElement('div'); c.textContent=['🎉','✨','🌟'][Math.floor(Math.random()*3)]; c.style.position='fixed'; c.style.left=(20+Math.random()*60)+'%'; c.style.top=(10+Math.random()*40)+'%'; c.style.fontSize=(12+Math.random()*28)+'px'; c.style.zIndex=9999; document.body.appendChild(c); setTimeout(()=>{ c.style.transform='translateY(300px) rotate('+Math.random()*360+'deg)'; c.style.transition='transform 1.2s linear, opacity 1.2s'; c.style.opacity='0'; },30); setTimeout(()=>c.remove(),1400); } }
+
+/* ---------- auth (simple modal prompts) ---------- */
+function authPrompt(){
+  const u = prompt('Username (contoh: yumiko)'); if(!u) return;
+  const p = prompt('Password'); if(!p) return;
+  if(!store.users[u]){ store.users[u] = { username:u, password:p, sunPoints:100, streak:0, totalStudyMinutes:0, completedTasks:0, flashcards:[], tasks:[], journals:[], moods:[], achievements:[], unlockedOutfits:[], statsMinutes:[20,30,15,40,10,50,25] }; store.currentUser = store.users[u]; save(); notify('Terdaftar & login sebagai '+u); playUISound('pop'); render(); return; }
+  if(store.users[u].password === p){ store.currentUser = store.users[u]; save(); notify('Selamat kembali '+u); render(); } else alert('Kredensial salah');
+}
+
+/* ---------- helpers ---------- */
+function alertLoginRequired(){ alert('Fitur ini memerlukan login. Klik Login di kanan atas.'); }
+
+/* ---------- init ---------- */
+render();
+window.addEventListener('resize', ()=>{ const fm=document.getElementById('floating-menu'); const tb=document.getElementById('tabbar'); if(window.innerWidth < 980){ fm.classList.remove('hidden'); tb.classList.remove('hidden'); } else { fm.classList.add('hidden'); tb.classList.add('hidden'); closeMobileSidebar(); } });
+</script>
+</body>
+</html>
